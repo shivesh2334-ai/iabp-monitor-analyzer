@@ -3,8 +3,10 @@ export default async function handler(req,res){
  res.setHeader('Cache-Control','no-store');
  if(req.method!=='POST')return res.status(405).json({error:'Use POST.'});
  try{
- const {apiKey,parameters={},image,action='analyze',provider='anthropic'}=req.body||{};
+ const {apiKey: suppliedKey,parameters={},image,action='analyze',provider='anthropic'}=req.body||{};
  if(!['anthropic','gemini'].includes(provider))return res.status(400).json({error:'Choose a supported AI provider.'});
+ const apiKey=typeof suppliedKey==='string'&&suppliedKey.trim()?suppliedKey.trim():provider==='gemini'?(process.env.GEMINI_API_KEY||'').trim():suppliedKey;
+ if(provider==='gemini'&&!apiKey)return res.status(503).json({error:'Gemini is not configured. Set GEMINI_API_KEY in Vercel Production and redeploy, or enter a Google Gemini key in the app.'});
  const providerName=provider==='gemini'?'Google Gemini':'Anthropic';
  if(typeof apiKey!=='string'||apiKey.length<10||apiKey.length>512||/[\r\n]/.test(apiKey)||(provider==='anthropic'&&!apiKey.startsWith('sk-ant-')))return res.status(400).json({error:`Enter a valid ${providerName} API key. It is used for this request only.`});
  if(!parameters||typeof parameters!=='object'||Array.isArray(parameters))return res.status(400).json({error:'Invalid parameters.'});
