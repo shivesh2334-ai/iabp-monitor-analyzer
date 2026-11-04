@@ -19,3 +19,11 @@ Streamlit needs a persistent server and is replaced with a static frontend and r
 ## Verification
 
 `npm run check` checks JavaScript syntax. API validation and mocked-provider flow checks cover method rejection, missing keys, missing image, invalid uploads, extraction and report responses. Live paid AI analysis requires a valid user API key and has not been verified. This application has not undergone clinical validation.
+
+## Additional free-tier provider
+
+Select Google Gemini in the application and enter a Google AI Studio API key. Gemini 3.5 Flash-Lite supports image analysis, parameter extraction and text reports. Requests use the official Google generateContent API directly from the Vercel Node function; no extra runtime dependency is required. Optional Vercel environment variable `GEMINI_MODEL` overrides the default model. API keys remain request-scoped and are never committed, logged or persisted by this application.
+
+Free usage depends on Google's project eligibility and quotas. The app cannot determine billing status; a billed project can incur charges. Quota errors do not trigger automatic paid-provider fallback. Google states free-tier content is used to improve products: use only de-identified or synthetic inputs. The provider selector clears the previous key, and reports identify the provider/model used. No Gemini key is provisioned by this update. Live inference requires the user's own key.
+
+References checked 4 November 2026: https://aistudio.google.com/docs/pricing and https://aistudio.google.com/docs/models/gemini-3.5-flash-lite
