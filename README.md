@@ -13,3 +13,5 @@ Image upload and compression, AI image analysis, parameter extraction, editable 
 ## Deployment
 
 Import into Vercel as Other, root directory, no build command. Static frontend plus Node.js API. Run npm run check for syntax validation.
+
+Default model: `claude-haiku-5-5` for image analysis, extraction and parameter reports. `ANTHROPIC_MODEL` may override this on the server.
