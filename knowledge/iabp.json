@@ -1,0 +1,92 @@
+{
+  "reviewed": "2026-11-05",
+  "sources": [
+    {
+      "id": "PDF",
+      "title": "Krishna & Zacharowski \u2014 Principles of intra-aortic balloon pump counterpulsation (2009), supplied document",
+      "url": "https://doi.org/10.1093/bjaceaccp/mkn051"
+    },
+    {
+      "id": "GETINGE",
+      "title": "Getinge Cardiosave timing quick reference (device-specific)",
+      "url": "https://www.getinge.com/dam/hospital/documents/english/cardiosave_iabp_operation_-_quick_reference_guide-114970-en.pdf"
+    },
+    {
+      "id": "ESC",
+      "title": "2023 ESC acute coronary syndromes guideline, sections 7.2 and 12.2.2",
+      "url": "https://doi.org/10.1093/eurheartj/ehad191"
+    }
+  ],
+  "chunks": [
+    {
+      "id": "principles",
+      "title": "Physiology and oxygen balance",
+      "source": "PDF",
+      "pages": "24\u201325",
+      "text": "Inflation during diastole displaces aortic blood, supporting coronary perfusion. Deflation before ejection reduces LV afterload and myocardial oxygen demand. DPTI/TTI describes oxygen supply relative to demand; it cannot be calculated from a single pressure or screenshot. Response varies with balloon volume, heart rate, aortic compliance and vascular resistance."
+    },
+    {
+      "id": "indications",
+      "title": "Indication and contraindication review",
+      "source": "PDF",
+      "pages": "25\u201326",
+      "text": "Review the clinical indication and definitive treatment plan. The article discusses acute MR/VSD, refractory ischemia or ventricular failure, perioperative support and bridge strategies. Assess aortic regurgitation, suspected dissection, aneurysm, vascular disease, bleeding and infection. Historical indication tables are not current treatment recommendations."
+    },
+    {
+      "id": "position",
+      "title": "Position, size and triggering",
+      "source": "PDF",
+      "pages": "26",
+      "text": "Confirm catheter position using appropriate imaging and the device instructions. The article describes the tip distal to the left subclavian origin; avoid renal and arch branch obstruction. Choose balloon size by the current catheter instructions, not historical height tables alone. Verify ECG or arterial trigger quality, rhythm and pressure transducer calibration; ECG landmarks alone do not establish correct mechanical timing."
+    },
+    {
+      "id": "inflation",
+      "title": "Inflation at valve closure",
+      "source": "PDF",
+      "pages": "26\u201328, Figs 1\u20132",
+      "text": "Use the arterial dicrotic notch as the valve-closure landmark. Early inflation occurs before closure, can overlap systole and increase LV loading and oxygen demand. Late inflation follows closure with loss of early diastolic support and coronary perfusion benefit. If the notch or inflation onset is unclear, timing remains indeterminate."
+    },
+    {
+      "id": "deflation",
+      "title": "Deflation before ejection",
+      "source": "PDF",
+      "pages": "27\u201328, Fig 2",
+      "text": "Early deflation truncates diastolic support and may impair afterload reduction. Late deflation persists into ejection, potentially obstructing LV outflow and increasing workload. Compare assisted and unassisted end-diastolic and systolic pressures with visible waveform landmarks; pressure differences alone do not identify a timing error."
+    },
+    {
+      "id": "response",
+      "title": "Hemodynamic response and augmentation",
+      "source": "PDF",
+      "pages": "24\u201327",
+      "text": "Record measured MAP, augmented diastolic pressure and separately labeled assisted and unassisted pressures. Greater augmentation can occur with useful support, but augmentation amplitude alone does not establish adequate organ perfusion. Assess symptoms, urine output, lactate trend, rhythm, vasoactive support and clinical examination. Low augmentation warrants assessment of signal, timing, rhythm, preload, position and device integrity."
+    },
+    {
+      "id": "complications",
+      "title": "Complications and bedside surveillance",
+      "source": "PDF",
+      "pages": "25\u201328, Table 3",
+      "text": "Monitor distal pulses, temperature, color, sensation and movement, insertion-site bleeding, hemoglobin, platelets, hemolysis, renal function and infection. New oliguria raises concern for malposition as well as hypoperfusion. Blood in helium tubing, acute limb ischemia, neurologic change or abrupt deterioration requires immediate bedside escalation and manufacturer emergency procedures. Never use an app-generated instruction to run a pump-off trial."
+    },
+    {
+      "id": "weaning",
+      "title": "Recovery, weaning and documentation",
+      "source": "PDF",
+      "pages": "27",
+      "text": "Review recovery, perfusion, ischemia, rhythm and vasoactive requirements with the treating team before weaning. The historical article discusses ratio or volume reduction; it does not establish a universal schedule. Use device-specific local protocols and document response. Anticoagulation requires individualized bleeding/thrombosis assessment and local policy; do not reproduce the historical blanket always-anticoagulate statement as a prescription."
+    },
+    {
+      "id": "device-timing",
+      "title": "Advanced waveform comparison",
+      "source": "GETINGE",
+      "pages": "Timing assessment",
+      "text": "Identify the dicrotic notch and inflation onset; a sharp transition supports alignment. Compare assisted with unassisted cycles where available. A bedside clinician must decide whether changing support frequency for assessment is appropriate. Match the guide to the installed device software and full operating instructions."
+    },
+    {
+      "id": "modern-evidence",
+      "title": "Modern evidence overrides historical shock indications",
+      "source": "ESC",
+      "pages": "7.2; 12.2.2",
+      "text": "Routine IABP is discouraged in infarct-related cardiogenic shock without a mechanical complication. With an ACS mechanical complication, temporary support may be considered while definitive repair is arranged. Decisions belong to the multidisciplinary treating team; do not delay definitive care."
+    }
+  ]
+}
