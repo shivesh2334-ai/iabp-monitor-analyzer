@@ -36,16 +36,17 @@ export default async function handler(req,res){
  const findings = evaluate(clean);
  const active = findings.filter(f => f.status === 'finding').sort((a,b) =>
    Number(b.severity === 'urgent') - Number(a.severity === 'urgent'));
- const lines = active.slice(0, 3).map(f => '- ' + f.message + ' [' + f.id + ']');
+ const lines = active.slice(0, 3).map(f => '- ' + f.message + ' [' + f.id + '; ' + f.source.chunk + ', p./section ' + f.source.page + ']');
  const report = 'Analysis: ' + (extraction ? 'Image readings are pending clinician review. ' : '') +
    findings.filter(f => f.status === 'not assessable').length + ' checks not assessable.' +
    '\n\nSuggested setting changes:\n' + (lines.join('\n') || '- No flagged pattern in the assessable checks.');
- return res.json({report, findings, extraction, provider: extraction ? 'anthropic' : 'deterministic',
-   model, rulesVersion: ruleset.version, guidelineVersion: knowledge.reviewed, sources: knowledge.sources});
+ const footer = 'Rules ' + ruleset.version + ' · Guideline corpus ' + knowledge.version;
+ return res.json({report: report + '\n\n' + footer, summary: report, footer, findings, extraction, provider: extraction ? 'anthropic' : 'deterministic',
+   model, rulesVersion: ruleset.version, guidelineVersion: knowledge.version, sources: knowledge.sources});
  } catch (error) {
    status = error instanceof RequestError ? error.status : error.name === 'TimeoutError' ? 504 : 503;
    return res.status(status).json({error: error instanceof RequestError ? error.message : 'Analysis temporarily unavailable. Try later.'});
  } finally {
-   console.info(JSON.stringify({requestId, model, latency: Date.now() - started, status, rulesVersion: ruleset.version, guidelineVersion: knowledge.reviewed}));
+   console.info(JSON.stringify({requestId, model, latency: Date.now() - started, status, rulesVersion: ruleset.version, guidelineVersion: knowledge.version}));
  }
 }
