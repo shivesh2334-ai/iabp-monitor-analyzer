@@ -13,5 +13,7 @@ jobs:
         with:
           node-version: 22
       - run: npm run lint
+        env:
+          LINT_BASE: ${{ github.event.pull_request.base.sha }}
       - run: npm run check
       - run: npm test
