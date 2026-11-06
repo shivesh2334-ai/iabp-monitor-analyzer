@@ -1,0 +1,273 @@
+{
+  "version": "1.0.0",
+  "date": "2026-11-06",
+  "rules": [
+    {
+      "id": "ASSISTED-SBP",
+      "parameters": [
+        "assistedSystolic",
+        "unassistedSystolic"
+      ],
+      "condition": {
+        "operator": "gte"
+      },
+      "severity": "warning",
+      "message": "Assisted systolic pressure is at or above the unassisted systolic pressure.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "29, 36",
+        "chunk": "nepean-waveforms"
+      }
+    },
+    {
+      "id": "ASSISTED-EDP",
+      "parameters": [
+        "assistedEDP",
+        "unassistedEDP"
+      ],
+      "condition": {
+        "operator": "gte"
+      },
+      "severity": "warning",
+      "message": "Assisted end-diastolic pressure is at or above the unassisted end-diastolic pressure.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "29, 36",
+        "chunk": "nepean-waveforms"
+      }
+    },
+    {
+      "id": "AUGMENTATION",
+      "parameters": [
+        "augmentedPressure",
+        "unassistedSystolic"
+      ],
+      "condition": {
+        "operator": "lte"
+      },
+      "severity": "warning",
+      "message": "Augmentation is at or below the explicitly labelled unassisted systolic peak. Perfusion cannot be determined from this comparison.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "29, 36",
+        "chunk": "nepean-waveforms"
+      }
+    },
+    {
+      "id": "EARLY-INFLATION",
+      "parameters": [
+        "inflationObservation",
+        "timingSeen"
+      ],
+      "condition": {
+        "operator": "timing",
+        "value": "Before notch",
+        "confirmation": "Early inflation"
+      },
+      "severity": "warning",
+      "message": "Early inflation",
+      "source": {
+        "guideline": "Webb et al. 2015",
+        "page": "PDF pp. 9\u201310",
+        "chunk": "webb-timing"
+      }
+    },
+    {
+      "id": "LATE-INFLATION",
+      "parameters": [
+        "inflationObservation",
+        "timingSeen"
+      ],
+      "condition": {
+        "operator": "timing",
+        "value": "After notch",
+        "confirmation": "Late inflation"
+      },
+      "severity": "warning",
+      "message": "Late inflation",
+      "source": {
+        "guideline": "Webb et al. 2015",
+        "page": "PDF pp. 9\u201310",
+        "chunk": "webb-timing"
+      }
+    },
+    {
+      "id": "EARLY-DEFLATION",
+      "parameters": [
+        "deflationObservation",
+        "timingSeen"
+      ],
+      "condition": {
+        "operator": "timing",
+        "value": "Premature loss of diastolic support",
+        "confirmation": "Early deflation"
+      },
+      "severity": "warning",
+      "message": "Early deflation",
+      "source": {
+        "guideline": "Webb et al. 2015",
+        "page": "PDF pp. 9\u201310",
+        "chunk": "webb-timing"
+      }
+    },
+    {
+      "id": "LATE-DEFLATION",
+      "parameters": [
+        "deflationObservation",
+        "timingSeen"
+      ],
+      "condition": {
+        "operator": "timing",
+        "value": "Persists into ejection",
+        "confirmation": "Late deflation"
+      },
+      "severity": "warning",
+      "message": "Late deflation",
+      "source": {
+        "guideline": "Webb et al. 2015",
+        "page": "PDF pp. 9\u201310",
+        "chunk": "webb-timing"
+      }
+    },
+    {
+      "id": "BLOOD-TUBING",
+      "parameters": [
+        "balloonWaveform"
+      ],
+      "condition": {
+        "operator": "equals",
+        "value": "Blood in tubing"
+      },
+      "severity": "urgent",
+      "message": "Blood reported in helium tubing. Suspected balloon rupture requires urgent bedside review.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "43\u201346",
+        "chunk": "nepean-alarms"
+      }
+    },
+    {
+      "id": "HELIUM-LOSS",
+      "parameters": [
+        "balloonWaveform"
+      ],
+      "condition": {
+        "operator": "equals",
+        "value": "Helium loss"
+      },
+      "severity": "urgent",
+      "message": "Helium loss reported. Device and circuit integrity require urgent bedside review.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "43\u201346",
+        "chunk": "nepean-alarms"
+      }
+    },
+    {
+      "id": "DAMPED-BALLOON",
+      "parameters": [
+        "balloonWaveform"
+      ],
+      "condition": {
+        "operator": "equals",
+        "value": "Low / damped"
+      },
+      "severity": "warning",
+      "message": "Damped balloon pressure waveform reported.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "43\u201346",
+        "chunk": "nepean-alarms"
+      }
+    },
+    {
+      "id": "AUG-ALARM",
+      "parameters": [
+        "augmentationAlarm"
+      ],
+      "condition": {
+        "operator": "equals",
+        "value": "Off / muted"
+      },
+      "severity": "warning",
+      "message": "The augmentation alarm is reported off or muted.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "43\u201346",
+        "chunk": "nepean-alarms"
+      }
+    },
+    {
+      "id": "PHYSIOLOGIC-RANGES",
+      "parameters": [
+        "heartRate",
+        "systolic",
+        "diastolic",
+        "map"
+      ],
+      "condition": {
+        "operator": "TODO_VERIFY"
+      },
+      "severity": "info",
+      "message": "Device and patient-specific reference ranges require verification.",
+      "source": {
+        "guideline": "Krishna & Zacharowski 2009",
+        "page": "24\u201327",
+        "chunk": "response"
+      }
+    },
+    {
+      "id": "BALLOON-VOLUME",
+      "parameters": [
+        "deviceModel",
+        "balloonVolume"
+      ],
+      "condition": {
+        "operator": "TODO_VERIFY"
+      },
+      "severity": "info",
+      "message": "Balloon volume requires the catheter specification and device instructions.",
+      "source": {
+        "guideline": "Krishna & Zacharowski 2009",
+        "page": "26",
+        "chunk": "position"
+      }
+    },
+    {
+      "id": "RATIO-TRIGGER",
+      "parameters": [
+        "deviceModel",
+        "assistRatio",
+        "trigger",
+        "mode"
+      ],
+      "condition": {
+        "operator": "TODO_VERIFY"
+      },
+      "severity": "info",
+      "message": "Assist ratio and trigger appropriateness require bedside signal review and device-specific instructions.",
+      "source": {
+        "guideline": "Getinge Cardiosave quick reference",
+        "page": "Timing assessment",
+        "chunk": "device-timing"
+      }
+    },
+    {
+      "id": "HELIUM-PRESSURE",
+      "parameters": [
+        "deviceModel",
+        "heliumPressure"
+      ],
+      "condition": {
+        "operator": "TODO_VERIFY"
+      },
+      "severity": "info",
+      "message": "A numeric helium-pressure threshold requires the installed model instructions.",
+      "source": {
+        "guideline": "Nepean IABP Education",
+        "page": "43\u201346",
+        "chunk": "nepean-alarms"
+      }
+    }
+  ]
+}

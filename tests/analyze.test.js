@@ -4,7 +4,14 @@ import handler from '../api/analyze.js';
 import {retrieve} from '../knowledge/iabp.js';
 const invoke=async(body,method='POST')=>{const result={};const res={setHeader(){},status(n){result.status=n;return this},json(data){result.data=data;return this}};await handler({body,method,headers:{'content-type':'application/json'}},res);return result;};
 test('knowledge retrieval resolves clinical topics',()=>{assert.equal(retrieve('early inflation dicrotic notch',1)[0].id,'inflation');assert.ok(retrieve('modern evidence').some(x=>x.id==='modern-evidence'));});
-test('analysis preserves optional values and injects referenced knowledge',async()=>{process.env.ANTHROPIC_API_KEY='test-only';let payload;const original=global.fetch;global.fetch=async(u,opts)=>{payload=JSON.parse(opts.body);return {ok:true,json:async()=>({content:[{type:'text',text:'Analysis: Lactate supplied; waveform unavailable.\nSuggested setting changes:\n- Verify at bedside.'}]})}};try{const r=await invoke({parameters:{lactate:'3.4'}});assert.ok(r.data.report.startsWith('Analysis:')); assert.ok(r.data.report.split(/\s+/).length<=100);assert.ok(payload.system.includes('modern-evidence'));assert.ok(payload.system.includes('1 physiology'));assert.ok(payload.messages[0].content[0].text.includes('3.4'));assert.equal(r.data.sources.length,3);assert.ok(r.data.retrieved.length>0);}finally{global.fetch=original;}});
+test('analysis evaluates submitted values without calling a model',async t=>{
+  process.env.ANTHROPIC_API_KEY='test-only';
+  const model=t.mock.method(globalThis,'fetch',()=>{throw Error('Unexpected model call')});
+  const r=await invoke({parameters:{assistedSystolic:'90',unassistedSystolic:'89'}});
+  assert.equal(model.mock.callCount(),0);
+  assert.match(r.data.report,/ASSISTED-SBP/);
+  assert.ok(r.data.findings.some(f=>f.status==='not assessable'));
+});
 test('empty input and extraction without image are rejected',async()=>{assert.equal((await invoke({parameters:{}})).status,400);assert.equal((await invoke({action:'extract'})).status,400);assert.equal((await invoke({},'GET')).status,405);});
 test('extraction validates forced tool output and preserves absent values',async t=>{
   t.mock.method(globalThis,'fetch',async (_url,opts)=>{
@@ -19,4 +26,4 @@ test('extraction validates forced tool output and preserves absent values',async
   assert.equal(r.data.fields.lactate.value,null);
   assert.equal(r.data.model,'claude-opus-5-5');
 });
-test('provider failure remains explicit',async()=>{const original=global.fetch;global.fetch=async()=>({ok:false,status:429});try{assert.equal((await invoke({parameters:{map:'65'}})).status,429);}finally{global.fetch=original;}});
+test('provider failure remains explicit',async()=>{const original=global.fetch;global.fetch=async()=>({ok:false,status:429});try{assert.equal((await invoke({action:'extract',image:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='})).status,429);}finally{global.fetch=original;}});
