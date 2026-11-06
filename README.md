@@ -21,9 +21,10 @@ Copy `.env.example` for local use. Set secrets in Vercel for hosted use.
 | `IABP_ACCESS_CODE` | Optional shared code, sent in the `X-IABP-Access-Code` header |
 | `IABP_IP_PER_MINUTE` | Fixed-window per-IP request quota, default 10 |
 | `IABP_DAILY_CAP` | UTC global daily request cap, default 200 |
-| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Required hosted quota store credentials. Existing `KV_REST_API_URL` and `KV_REST_API_TOKEN` names are also accepted. |
+| `BLOB_READ_WRITE_TOKEN` | Server credential for a dedicated private Vercel Blob store |
+| `IABP_QUOTA_HASH_KEY` | Stable random secret of at least 32 characters for hashing client IPs |
 
-Configure the hosted quota store before rollout. Missing or unavailable Redis configuration causes the hosted API to fail closed. In-memory quotas are for local use. Quotas count incoming requests. Each extraction can make two reads, with one transient retry per read. Redis quota keys contain hashed IP identifiers and time windows. Application logs contain request ID, model, latency, status and version metadata. Images sent for extraction leave the browser for Vercel and Anthropic. Use de-identified images and confirm redaction before sending. Shared access codes provide a basic access gate and are unsuitable as individual clinician accounts.
+Attach a dedicated private Vercel Blob store before rollout, then set the hash key in Vercel. Use separate stores for preview and production. The quota record contains only keyed IP hashes, time windows, and counts. Conditional updates reserve both quotas in one write. Keep the quota object intact to preserve the current counts. The hosted image API fails closed when the store is unavailable, while manual reports and guideline lookup stay available. Quotas count image requests. Each extraction can make two reads, with one transient retry per read. Application logs contain request ID, model, latency, status and version metadata. Images sent for extraction leave the browser for Vercel and Anthropic. Use de-identified images and confirm redaction before sending. Shared access codes provide a basic access gate and are unsuitable as individual clinician accounts.
 
 JSON bodies are limited to 4.4 MB, which restricts base64 image payloads to roughly 3.3 MB before other fields. The decoded limit is 5 MB. Image validation checks canonical base64 and matching format signatures. Models are chosen server-side from an allowlist.
 

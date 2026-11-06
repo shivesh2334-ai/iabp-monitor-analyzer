@@ -35,3 +35,16 @@ test('malformed extraction falls back once and never returns guessed readings',a
   assert.equal(mock.mock.callCount(),2);
   assert.equal(r.data.fields,undefined);
 });
+
+test('manual reports remain available without hosted quota storage', async t => {
+  t.mock.method(globalThis, 'fetch', () => { throw Error('Unexpected network request'); });
+  const previous = process.env.VERCEL;
+  process.env.VERCEL = '1';
+  try {
+    const r = await invoke({parameters:{map:'65'}});
+    assert.equal(r.data.provider,'deterministic');
+  } finally {
+    if (previous === undefined) delete process.env.VERCEL;
+    else process.env.VERCEL = previous;
+  }
+});

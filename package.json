@@ -11,5 +11,8 @@
     "test": "node --test tests/*.test.js",
     "lint": "git diff --check && git diff --check \"${LINT_BASE:-HEAD^}\" HEAD",
     "eval": "node tests/eval/run.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "2.8.2"
   }
 }

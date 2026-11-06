@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { anthropicMessage, checkAccess, configuredModel, reserveRequest, validateRequest } from '../lib/api-security.js';
+import { anthropicMessage, checkAccess, configuredModel, reserveHostedQuota, reserveRequest, validateRequest } from '../lib/api-security.js';
 
 const json = body => ({ headers: { 'content-type': 'application/json' }, body });
 const check = body => validateRequest(json(body), ['map']);
@@ -58,4 +58,27 @@ test('Anthropic retries transient errors once and propagates timeout', async t =
     });
   });
   await assert.rejects(anthropicMessage('test', {}, { timeout: 5 }), { name: 'TimeoutError' });
+});
+
+test('conditional writes enforce both quotas across concurrent callers', async () => {
+  let version = 0;
+  let value;
+  const store = {
+    async read() { return version ? { etag: String(version), value } : null; },
+    async write(next, etag) {
+      if (etag !== (version ? String(version) : undefined)) return false;
+      value = next;
+      version++;
+      return true;
+    }
+  };
+  let now = Date.UTC(2026, 10, 6);
+  const reserve = key => reserveHostedQuota(store, key, [1, 2], () => now);
+  const results = await Promise.all([reserve('a'), reserve('a'), reserve('b'), reserve('c')]);
+  assert.equal(results.filter(Boolean).length, 2);
+  assert.equal(value.ips.a, 1);
+  now += 60000;
+  assert.equal(await reserve('a'), false);
+  now += 86400000;
+  assert.equal(await reserve('a'), true);
 });

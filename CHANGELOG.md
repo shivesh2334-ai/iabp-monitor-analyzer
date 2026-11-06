@@ -9,3 +9,4 @@
 - Added rule and API tests, synthetic extraction fixtures and pull request checks.
 - Archived the unused Streamlit implementation and documented rollout requirements.
 - Added a persistent bedside verification banner, urgent findings and report provenance.
+- Replaced Redis quota storage with conditional writes to a private Vercel Blob store.

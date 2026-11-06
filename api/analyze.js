@@ -21,7 +21,7 @@ export default async function handler(req,res){
  const models = image ? extractionModels() : null;
  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
  if (image && !apiKey) throw new RequestError(503, 'Analysis temporarily unavailable.');
- await reserveRequest(req);
+ if (image) await reserveRequest(req);
  const clean = Object.fromEntries(keys.map(key => [key, String(parameters[key] ?? '')]));
  let extraction;
  if (image) {
