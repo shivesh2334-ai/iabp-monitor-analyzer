@@ -1,0 +1,9 @@
+{
+  "heartRate": 82,
+  "systolic": null,
+  "diastolic": 56,
+  "map": null,
+  "augmentedPressure": 103,
+  "assistRatio": "1:2",
+  "trigger": "ECG"
+}

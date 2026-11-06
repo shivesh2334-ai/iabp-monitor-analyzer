@@ -27,3 +27,11 @@ test('extraction validates forced tool output and preserves absent values',async
   assert.equal(r.data.model,'claude-opus-5-5');
 });
 test('provider failure remains explicit',async()=>{const original=global.fetch;global.fetch=async()=>({ok:false,status:429});try{assert.equal((await invoke({action:'extract',image:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='})).status,429);}finally{global.fetch=original;}});
+
+test('malformed extraction falls back once and never returns guessed readings',async t=>{
+  const mock=t.mock.method(globalThis,'fetch',async()=>({ok:true,json:async()=>({content:[{type:'text',text:'malformed'}]})}));
+  const r=await invoke({action:'extract',image:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='});
+  assert.equal(r.status,502);
+  assert.equal(mock.mock.callCount(),2);
+  assert.equal(r.data.fields,undefined);
+});
