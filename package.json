@@ -9,7 +9,7 @@
   "scripts": {
     "check": "for file in app.js $(find api lib knowledge tests -name \"*.js\"); do node --check \"$file\" || exit 1; done",
     "test": "node --test tests/*.test.js",
-    "lint": "git diff --check HEAD^ HEAD",
+    "lint": "git diff --check && git diff --check \"${LINT_BASE:-HEAD^}\" HEAD",
     "eval": "node tests/eval/run.js"
   }
 }

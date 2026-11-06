@@ -1,17 +1,36 @@
 # IABP Monitor Analyzer
 
-Vercel web adaptation of IABP-C. Original source is retained under original/.
+Clinician-facing decision support for intra-aortic balloon pump monitor review. Verify readings and findings at the bedside. The application does not control the pump or issue treatment orders.
+
+## Architecture
+
+Vercel serves the static frontend with no build step. The Node endpoint in `api/analyze.js` uses Claude only for monitor transcription. The browser re-encodes images and offers local crop and opaque masking before upload. Clinicians review extracted values before the deterministic evaluator compares submitted values against `knowledge/rules.json`. The knowledge and learning views use local source chunks. The Streamlit implementation lives in `archive/`.
+
+The JSON API accepts `action`, `parameters` and an optional JPEG, PNG or WebP data URL. Use `extract` to get structured readings. With `analyze`, findings come from submitted parameters. If the API caller also supplies an image, extracted values are returned separately for review.
 
 ## Configuration
 
-Set ANTHROPIC_API_KEY as a sensitive Vercel Production environment variable, then redeploy. Optional ANTHROPIC_MODEL overrides the default Claude model. Credentials are read only on the server; no provider selector or key input is exposed in the browser. Request-supplied keys are ignored. Gemini is removed.
+Copy `.env.example` for local use. Set secrets in Vercel for hosted use.
 
-## Features
+| Variable | Purpose |
+| --- | --- |
+| `ANTHROPIC_API_KEY` | Server-only Claude credential for image extraction |
+| `IABP_EXTRACTION_MODEL` | Primary model, defaults to Sonnet 5.5 |
+| `IABP_EXTRACTION_FALLBACK_MODEL` | Second model for malformed or uncertain extraction, defaults to Opus 5.5 |
+| `IABP_CROSS_CHECK` | Set to 1 for an independent second read |
+| `IABP_ACCESS_CODE` | Optional shared code, sent in the `X-IABP-Access-Code` header |
+| `IABP_IP_PER_MINUTE` | Fixed-window per-IP request quota, default 10 |
+| `IABP_DAILY_CAP` | UTC global daily request cap, default 200 |
+| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Required hosted quota store credentials. Existing `KV_REST_API_URL` and `KV_REST_API_TOKEN` names are also accepted. |
 
-Image upload and compression, AI image analysis, parameter extraction, editable parameters, report generation and download, printing and safety checklists. Use de-identified data; image and parameter requests are sent to Anthropic.
+Configure the hosted quota store before rollout. Missing or unavailable Redis configuration causes the hosted API to fail closed. In-memory quotas are for local use. Quotas count incoming requests. Each extraction can make two reads, with one transient retry per read. Redis quota keys contain hashed IP identifiers and time windows. Application logs contain request ID, model, latency, status and version metadata. Images sent for extraction leave the browser for Vercel and Anthropic. Use de-identified images and confirm redaction before sending. Shared access codes provide a basic access gate and are unsuitable as individual clinician accounts.
 
-## Deployment
+JSON bodies are limited to 4.4 MB, which restricts base64 image payloads to roughly 3.3 MB before other fields. The decoded limit is 5 MB. Image validation checks canonical base64 and matching format signatures. Models are chosen server-side from an allowlist.
 
-Import into Vercel as Other, root directory, no build command. Static frontend plus Node.js API. Run npm run check for syntax validation.
+## Verification and limitations
 
-Default model: `claude-haiku-5-5` for image analysis, extraction and parameter reports. `ANTHROPIC_MODEL` may override this on the server.
+Run `npm run lint`, `npm run check` and `npm test`. Run `npm run eval` with a configured Anthropic key to evaluate the two synthetic fixtures. Each real evaluation makes billable provider requests. Synthetic fixtures and mocks do not establish clinical accuracy. Model confidence is self-reported. Device-specific rules marked `TODO_VERIFY` need current manufacturer references and clinical review before activation. The guideline lookup returns lexical matches to reviewed passages and does not synthesize answers. Report wording is deterministic and uses no Haiku call.
+
+A future TypeScript migration can start by specifying the shared request, extraction and finding contracts using JSDoc and checking JavaScript in CI. Next, migrate server modules in isolation and verify Vercel preview behavior. Migrate the browser only after approval of any build or delivery change. This update keeps JavaScript.
+
+See [CHANGELOG.md](CHANGELOG.md).

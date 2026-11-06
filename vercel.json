@@ -32,5 +32,17 @@
       "maxDuration": 60,
       "includeFiles": "knowledge/**"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/archive/:path*",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/original/:path*",
+      "destination": "/",
+      "permanent": false
+    }
+  ]
 }
