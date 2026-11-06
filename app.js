@@ -102,10 +102,11 @@ async function run(action,withImage){
    const remaining=data.findings.filter(finding=>finding.status==='not assessable');
    report=['IABP bedside review','Decision support only. Verify at bedside. This app does not control the pump.',
     ...findings.map(f=>'- '+findingText(f)),
+    ...data.sections.flatMap(section=>['', '## '+section.title,...section.lines.map(line=>'- '+line)]),
     remaining.length?'Not assessable: '+remaining.map(f=>f.id).join(', '):'',
     ...recorded.map(value=>'- '+value),
     ...provenance].filter(Boolean).join('\n');
-   renderReport(findings,remaining,recorded,provenance);
+   renderReport(findings,remaining,recorded,provenance,data.sections);
    show('report');notify('Report generated. Verify readings and findings at the bedside.');
   }
  }catch(error){notify(error.message||'Unable to complete analysis.')}
@@ -131,7 +132,7 @@ function renderLesson(i){const c=kb.chunks[i];$('lesson-title').textContent=(i+1
 loadKnowledge();
 
 const findingText=f=>f.message+' ['+f.id+' · '+f.source.guideline+' · '+f.source.chunk+' · '+f.source.page+']';
-function renderReport(findings,remaining,recorded,provenance){
+function renderReport(findings,remaining,recorded,provenance,sections){
  const host=$('output');host.replaceChildren();
  for(const finding of findings){
   const item=document.createElement('p');
@@ -142,6 +143,14 @@ function renderReport(findings,remaining,recorded,provenance){
  const summary=document.createElement('p');
  summary.textContent=(findings.length?'':'No flagged pattern in the assessable checks. ')+remaining.length+' checks not assessable.';
  host.append(summary);
+ for(const section of sections){
+  const card=document.createElement('section'),heading=document.createElement('h3'),list=document.createElement('ul');
+  card.className='review-section';heading.textContent=section.title;
+  for(const line of section.lines){
+   const item=document.createElement('li');item.textContent=line;list.append(item);
+  }
+  card.append(heading,list);host.append(card);
+ }
  if(remaining.length){
   const details=document.createElement('details'),title=document.createElement('summary');
   title.textContent='Checks not assessable';details.append(title);

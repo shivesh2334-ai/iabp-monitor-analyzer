@@ -5,3 +5,10 @@
 .urgent-finding { background: #ffe8e8; color: #721414; border-inline-start: .35rem solid #a72121; padding: .75rem; font-weight: 700; }
 .report-provenance { margin-top: 1rem; text-align: start; padding: 0; }
 @media print { .safety-banner { position: static; } .report-provenance { display: block; } }
+body > header { width: 100%; }
+.workspace { min-width: 0; }
+.review-section { border-block-start: 1px solid #dce5ec; padding-block: .75rem; }
+.review-section h3 { margin: 0 0 .35rem; }
+.review-section ul { margin: 0; padding-inline-start: 1.25rem; }
+.review-section li + li { margin-block-start: .45rem; }
+@media print { .review-section { break-inside: avoid; } }

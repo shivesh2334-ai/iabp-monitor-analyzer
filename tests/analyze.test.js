@@ -48,3 +48,16 @@ test('manual reports remain available without hosted quota storage', async t => 
     else process.env.VERCEL = previous;
   }
 });
+
+test('bedside report preserves measured values and separates displayed from unassisted pressure', async () => {
+  const r = await invoke({ parameters: {
+    heartRate: '94', systolic: '106', diastolic: '42', map: '80',
+    augmentedPressure: '115', trigger: 'ECG', balloonWaveform: 'Blood in tubing'
+  } });
+  assert.match(r.data.report, /Heart rate 94 bpm/);
+  assert.match(r.data.report, /Augmentation minus displayed systolic: 9 mmHg/);
+  assert.match(r.data.report, /comparison needs both explicitly labelled values/);
+  assert.match(r.data.report, /BLOOD-TUBING/);
+  assert.match(r.data.report, /Timing review depends on the dicrotic notch/);
+  assert.equal(r.data.sections.length, 3);
+});
