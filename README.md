@@ -26,3 +26,9 @@ The API also falls back automatically for missing Anthropic configuration, provi
 Explicit local request: POST /api/analyze with {"analysisMode":"local","parameters":{"map":"64"}}. Local requests do not call an LLM. Report downloads include the fallback disclosure and retrieved source passages. Knowledge review date remains 2026-11-05; this change adds no new clinical guidelines.
 
 Validation: npm run check and npm test (11 tests, including credential-free routing, source integrity, provider failure, timeout, missing/invalid data, image-only refusal and urgent reported observations). These tests do not establish clinical accuracy.
+
+## Three-section reports
+
+Reports now include Parameters observed, Within range and out of range parameters, and Opinion based on observation. Structured API sections drive the safe text/table renderer and the same complete content is exported. The old 100-word rejection and literal-whitespace rendering bugs are removed. AI image observations are explicitly unverified; supplied entries take precedence. Without an image, AI cannot add measurements.
+
+Classification is deterministic: adult resting HR uses the AHA 60–100 bpm general reference, not an IABP target. MAP uses only the optional clinician-entered mapTarget. Missing targets, unrecognized/invalid numbers and device-specific settings remain unclassified; there is no universal augmentation or timing-percent normal range. Missing values remain unknown. References: https://www.heart.org/en/healthy-living/exercise-and-physical-activity/fitness-basics/target-heart-rates and the existing cited IABP corpus. This is not a validated clinical assessment algorithm.

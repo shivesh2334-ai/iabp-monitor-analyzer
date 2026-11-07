@@ -6,7 +6,7 @@ import {wordCount} from '../knowledge/report-format.js';
 async function call(body){let status=200,data;await handler({method:'POST',body},{setHeader(){},status(n){status=n;return this},json(d){data=d}});return {status,data};}
 test('local mode needs no credentials or network and preserves measured MAP',async()=>{
  const fetch=global.fetch,key=process.env.ANTHROPIC_API_KEY;delete process.env.ANTHROPIC_API_KEY;global.fetch=()=>{throw Error('unexpected network')};
- try{const r=await call({parameters:{map:'64'},analysisMode:'local'});assert.equal(r.status,200);assert.equal(r.data.provider,'local');assert.match(r.data.report,/measured MAP 64/);assert.ok(!r.data.report.includes('111'));assert.ok(r.data.retrieved.every(c=>r.data.sources.some(s=>s.id===c.source)));}
+ try{const r=await call({parameters:{map:'64'},analysisMode:'local'});assert.equal(r.status,200);assert.equal(r.data.provider,'local');assert.ok(r.data.sections.observed.some(r=>r.key==='map'&&r.value==='64'));assert.ok(!r.data.report.includes('111'));assert.ok(r.data.retrieved.every(c=>r.data.sources.some(s=>s.id===c.source)));}
  finally{global.fetch=fetch;if(key===undefined)delete process.env.ANTHROPIC_API_KEY;else process.env.ANTHROPIC_API_KEY=key;}
 });
 test('missing credentials automatically fall back; image-only and extraction require manual entry',async()=>{
@@ -20,6 +20,6 @@ test('timeout and empty LLM output use local report without claiming image inter
  finally{global.fetch=fetch;if(key===undefined)delete process.env.ANTHROPIC_API_KEY;else process.env.ANTHROPIC_API_KEY=key;}
 });
 test('urgent observation prioritised; timing percentages never diagnose timing',()=>{
- const r=localAnalysis({balloonWaveform:'Blood in tubing',inflationTiming:'0',deflationTiming:'0',map:'64'},{imageIgnored:true});assert.match(r.report,/immediate bedside escalation/);assert.ok(r.retrieved.some(c=>c.id==='complications'));assert.ok(wordCount(r.report)<=100);assert.ok(!r.report.includes('early inflation'));
- const unknown=localAnalysis({map:'<script>',heartRate:'NaN'});assert.match(unknown.report,/No valid numeric/);assert.ok(!unknown.report.includes('<script>'));
+ const r=localAnalysis({balloonWaveform:'Blood in tubing',inflationTiming:'0',deflationTiming:'0',map:'64'},{imageIgnored:true});assert.match(r.report,/immediate bedside escalation/);assert.ok(r.retrieved.some(c=>c.id==='complications'));assert.ok(r.report.includes('3. Opinion based on observation'));assert.ok(!r.report.includes('early inflation'));
+ const unknown=localAnalysis({map:'<script>',heartRate:'NaN'});assert.ok(unknown.sections.observed.every(r=>r.status==='Not classifiable'));
 });
