@@ -7,3 +7,6 @@ Server-side lexical retrieval ranks these curated chunks, then supplies all ten 
 Historical shock indications and blanket anticoagulation advice are explicitly qualified. Evidence review date: 2026-11-05. This corpus does not automatically refresh from the web.
 
 Run npm run check and npm test. API tests mock Anthropic and do not establish clinical accuracy or live credential/model availability. The existing ANTHROPIC_API_KEY and ANTHROPIC_MODEL configuration remains unchanged.
+
+
+Local fallback: fallback.js retrieves cited chunks and renders deterministic findings from entered values, without an LLM. Image recognition is unavailable in this mode. API fallback metadata and the UI distinguish it from AI output.
